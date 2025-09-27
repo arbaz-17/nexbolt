@@ -1,42 +1,61 @@
+/* 1) Load Tailwind v4 */
+@import "tailwindcss";
+
+/* 2) Voltage Black tokens as CSS variables (light & dark) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #F7F8FA;
+  --surface: #FFFFFF;
+  --muted: #E9ECF2;
+  --border: #E2E8F0;
+  --ring: #00A2FF;
+
+  --text: #0B0B0C;
+  --text-muted: #4B5563;
+
+  /* Bolt (LIGHT = Electric Blue) */
+  --brand: #00A2FF;
+  --brand-700: #0076B8;
+  --brand-900: #004D77;
+  --brand-glow: rgba(0, 162, 255, 0.25);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.dark {
+  --bg: #0B0B0C;
+  --surface: #121316;
+  --muted: #1A1C20;
+  --border: #1F2126;
+  --ring: #39FF14;
+
+  --text: #F3F4F6;
+  --text-muted: #9CA3AF;
+
+  /* Bolt (DARK = Volt Green) */
+  --brand: #39FF14;
+  --brand-700: #2EE80E;
+  --brand-900: #1EB300;
+  --brand-glow: rgba(57, 255, 20, 0.22);
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+/* 3) Map tokens to Tailwind color names via @theme (v4 feature)
+   This lets you use classes like bg-bg, text-brand, border-border, etc. */
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+
+  --color-brand: var(--brand);
+  --color-brand-700: var(--brand-700);
+  --color-brand-900: var(--brand-900);
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* 4) Custom utilities (v4) */
+@utility shadow-glow {
+  box-shadow: 0 0 0 3px var(--brand-glow);
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
+/* 5) Base */
+html, body { background: var(--bg); color: var(--text); }

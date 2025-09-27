@@ -1,95 +1,59 @@
-import Image from "next/image";
-import styles from "./page.module.css";
-
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <section aria-labelledby="hero-title" className="relative py-20 md:py-28">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="mx-auto max-w-3xl text-center">
+          <span className="inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-sm text-text-muted">
+            <span aria-hidden className="h-2 w-2 rounded-full bg-brand shadow-glow" />
+            Production-ready boilerplate
+          </span>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+          <h1 id="hero-title" className="mt-6 text-4xl md:text-6xl font-semibold tracking-tight">
+            Your SaaS, <span className="text-brand">supercharged</span>.
+          </h1>
+
+          <p className="mt-4 text-lg text-text-muted">
+            Auth, billing, tenancy, analytics—wired and ready. Ship in weeks, not months.
+          </p>
+
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <a
+              href="#get-started"
+              className="rounded-2xl bg-brand px-5 py-3 font-medium text-black shadow-glow focus:outline-none focus:ring-2 ring-offset-0"
+            >
+              Get Started
+            </a>
+            <a
+              href="#docs"
+              className="rounded-2xl border border-border px-5 py-3 font-medium hover:bg-muted focus:outline-none focus:ring-2 ring-offset-0"
+            >
+              View Docs
+            </a>
+          </div>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
-  );
+
+        {/* Example feature grid (nice starter section) */}
+        <div className="mx-auto mt-16 grid max-w-5xl grid-cols-1 gap-4 md:grid-cols-3">
+          {[
+            ['Authentication', 'NextAuth (Google, email, magic links) wired for App Router.'],
+            ['Billing', 'Paddle/LemonSqueezy with webhooks + plan gating.'],
+            ['Multitenancy', 'Orgs/teams, invites, RBAC roles out of the box.'],
+          ].map(([title, desc]) => (
+            <div key={title} className="rounded-2xl border border-border bg-surface p-6">
+              <h3 className="text-lg font-semibold">{title}</h3>
+              <p className="mt-2 text-sm leading-6 text-text-muted">{desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Ambient brand glow */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(60%_50%_at_50%_0%,black,transparent)]"
+      >
+        <div className="absolute inset-0 blur-3xl opacity-30" style={{ background: 'var(--brand-glow)' }} />
+      </div>
+    </section>
+  )
 }
