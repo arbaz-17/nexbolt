@@ -1,23 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Menu, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ThemeToggle from '../theme/ThemeToggle'
+import { useTheme } from '../theme/ThemeProvider'
 
 const NAV_LINKS = [
   { label: 'Waitlist', href: '#waitlist' },
   { label: 'Features', href: '#features' },
   { label: 'Roadmap',  href: '#roadmap' },
-  { label: 'Demo',     href: '#demo' },
-  { label: 'Pricing',  href: '#pricing' },
-  { label: 'FAQs',     href: '#faqs' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
+  const { theme } = useTheme()
 
   // Close on hash change
   useEffect(() => {
@@ -32,25 +31,38 @@ export default function Navbar() {
     root.style.overflow = open ? 'hidden' : ''
   }, [open])
 
+  // Choose logo src by theme (falls back to light)
+  const logoSrc = useMemo(
+    () => (theme === 'dark' ? '/assets/logo/logo-dark-3.svg' : '/assets/logo/logo-light-2.svg'),
+    [theme]
+  )
+
   return (
-    <header className="fixed left-0 top-4 z-50 w-full px-4">
+    <header className="fixed left-0 top-2 z-50 w-full px-4">
       <div
-        className="
-          relative mx-auto flex max-w-6xl items-center justify-between
-          rounded-full border border-border bg-surface/90 px-6 py-3 shadow-md backdrop-blur
-          supports-[backdrop-filter]:bg-surface/60 dark:supports-[backdrop-filter]:bg-surface/50
-        "
+          className="
+    relative mx-auto flex max-w-6xl items-center justify-between
+    rounded-full border border-border bg-surface/90 px-6 py-0  /* was py-3 → set to py-0 */
+    shadow-md backdrop-blur
+    supports-[backdrop-filter]:bg-surface/60 dark:supports-[backdrop-filter]:bg-surface/50
+  "
       >
         {/* Logo / Brand */}
-        <div className="z-20 flex items-center gap-2">
-          {/* <Image src="/nexbolt-logo.svg" alt="NexBolt" width={32} height={32} priority /> */}
-          <span aria-hidden className="inline-flex h-2.5 w-2.5 rounded-full bg-brand shadow-glow" />
-          <Link
-            href="/"
-            className="rounded-md px-1 font-semibold text-text focus:outline-none focus:ring-2 focus:ring-ring"
-          >
-            NexBolt
-          </Link>
+        <div className="z-20 flex items-center">
+<Link
+  href="/"
+  className="rounded-md px-1 py-0 leading-none focus:outline-none focus:ring-2 focus:ring-ring"
+  aria-label="NexBolt Home"
+>
+  <Image
+    src={logoSrc}
+    alt="NexBolt"
+    width={160}
+    height={40}
+    className="block h-10 w-auto align-middle"  /* block removes baseline gap */
+    priority
+  />
+</Link>
         </div>
 
         {/* Desktop nav — centered */}
@@ -83,15 +95,6 @@ export default function Navbar() {
             "
           >
             Join Waitlist
-          </a>
-          <a
-            href="#docs"
-            className="
-              rounded-full border border-border px-4 py-2 text-sm font-medium
-              text-text hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring
-            "
-          >
-            View Docs
           </a>
         </div>
 
@@ -139,10 +142,22 @@ export default function Navbar() {
               "
             >
               <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span aria-hidden className="inline-flex h-2.5 w-2.5 rounded-full bg-brand shadow-glow" />
-                  <span className="font-semibold">NexBolt</span>
-                </div>
+<Link
+  href="/"
+  onClick={() => setOpen(false)}
+  aria-label="NexBolt Home"
+  className="flex items-center leading-none"
+>
+  <Image
+    src={logoSrc}
+    alt="NexBolt"
+    width={148}
+    height={36}
+    className="block h-9 w-auto align-middle"
+    priority
+  />
+</Link>
+
                 <button
                   onClick={() => setOpen(false)}
                   aria-label="Close menu"
@@ -173,16 +188,6 @@ export default function Navbar() {
                     "
                   >
                     Join Waitlist
-                  </a>
-                  <a
-                    href="#docs"
-                    onClick={() => setOpen(false)}
-                    className="
-                      rounded-full border border-border px-4 py-2 text-center text-sm font-medium
-                      text-text hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring
-                    "
-                  >
-                    View Docs
                   </a>
                 </div>
               </nav>

@@ -15,7 +15,6 @@ export default function ThemeToggle({ className = '' }) {
       className={`inline-flex items-center gap-2 rounded-2xl border border-border px-3 py-1.5 text-sm text-text hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring ${className}`}
     >
       <Icon size={16} />
-      <span className="hidden sm:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
     </button>
   )
 }
