@@ -255,3 +255,25 @@ h1, h2 { letter-spacing: -0.02em; }
   }
 }
 
+
+
+/* Smooth, GPU-friendly marquee */
+@keyframes marquee {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(-50%,0,0); }
+}
+.marquee {
+  animation: marquee 28s linear infinite;
+  will-change: transform;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+  contain: paint;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marquee { animation: none !important; transform: none !important; }
+}
+
+/* Optional: tiny utility if you like */
+.contain-paint { contain: paint; }

@@ -12,7 +12,7 @@ export default function TextContentBlock({
   return (
     <section
       aria-labelledby="content-block-title"
-      className={`relative py-10 md:py-10 ${className} border border-amber-400`}
+      className={`relative py-10 md:py-10 ${className}`}
     >
       <div className={`mx-auto ${maxWidth} px-6 flex flex-col gap-4 ${alignClasses}`}>
         <h2

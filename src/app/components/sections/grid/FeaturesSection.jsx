@@ -38,7 +38,7 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
   return (
     <section
       id="features"
-      className={`w-full py-10 md:py-12 lg:py-16 border border-amber-400 ${className || ""}`}
+      className={`w-full py-10 md:py-12 lg:py-16 border  ${className || ""}`}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Icon tabs (icon-only, no bg) */}

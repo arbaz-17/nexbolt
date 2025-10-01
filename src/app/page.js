@@ -2,6 +2,9 @@ import HeroWaitlist from "./components/sections/hero/HeroWaitlist"
 import TextContentBlock from "./components/overlays/TextContentBlock"
 import TechStackGrid from "./components/sections/grid/TechStackGrid"
 import { FeaturesSection } from "./components/sections/grid/FeaturesSection"
+import { RoadmapSection } from "./components/sections/grid/RoadmapSection"
+import PricingTabs from "./components/sections/grid/PricingTabs"
+
 
 export default function Home() {
   return (
@@ -19,6 +22,18 @@ export default function Home() {
         align="center"
       />
       <FeaturesSection />
+            <TextContentBlock
+        title="NEXTBOLT WORK PROGRESS"
+        description="From ✅ shipped to ⏳ in progress, see what’s usable now and what’s around the corner as we march toward a stable, scalable v1."
+        align="center"
+      />
+      <RoadmapSection />
+      <TextContentBlock
+        title="PICK YOUR KIT, BUILD YOUR SAAS"
+        description="Save weeks of work. Pay once. Ship unlimited projects at bolt speed."
+        align="center"
+      />
+      <PricingTabs />
     </>
   )
 }

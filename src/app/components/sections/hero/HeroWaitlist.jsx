@@ -1,7 +1,8 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { motion, useReducedMotion, useInView } from 'framer-motion';
+import { useMobile } from '@/app/hooks/useMobile';
 import WaitlistForm from '../../forms/WaitlistForm';
 
 const BADGES = [
@@ -19,67 +20,88 @@ export default function HeroWaitlist() {
   const [success, setSuccess] = useState(false);
   const successRef = useRef(null);
 
+  // Performance toggles
+  const isMobile = useMobile();                 // hide/scale heavy bits on small screens
+  const prefersReduced = useReducedMotion();    // system setting
+  const marqueeRef = useRef(null);
+  const marqueeInView = useInView(marqueeRef, { once: false, margin: '-10% 0px -10% 0px' });
+
+  // Allow continuous loops only when: not reduced motion, not mobile, and visible
+  const allowLoops = !prefersReduced && !isMobile && marqueeInView;
+
+  // (Optional) mount flag to avoid SSR/window mismatch for any runtime checks you add later
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <section
       id="waitlist"
       aria-labelledby="hero-title"
-      className="relative scroll-mt-24 overflow-hidden py-20 md:py-28 border border-amber-400"
+      className="relative scroll-mt-24 overflow-hidden py-20 md:py-28"
     >
-      {/* animated brand ornaments (left & right, mirrored, theme-aware) */}
-      <motion.div
-        aria-hidden
-        initial={{ x: -120, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: 'easeOut' }}
-        className="pointer-events-none absolute left-[-60px] top-10 md:left-[-80px] md:top-16"
-      >
-        <motion.div
-          animate={{ y: [0, -50, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <BrandOrnament className="text-brand" size={220} />
-        </motion.div>
-      </motion.div>
+      {/* Ornaments: hide on mobile to avoid iOS mask perf, show on md+ */}
+      {!isMobile && (
+        <>
+          <motion.div
+            aria-hidden
+            initial={{ x: -120, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.9, ease: 'easeOut' }}
+            className="pointer-events-none absolute left-[-60px] top-10 md:left-[-80px] md:top-16"
+            style={{ willChange: 'transform', contain: 'paint' }}
+          >
+            <motion.div
+              animate={allowLoops ? { y: [0, -10, 0] } : { y: 0 }}
+              transition={allowLoops ? { duration: 6, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            >
+              {/* On iOS, CSS masks can be expensive; we keep them off on mobile. */}
+              <BrandOrnament className="text-brand" size={220} />
+            </motion.div>
+          </motion.div>
 
-      <motion.div
-        aria-hidden
-        initial={{ x: 120, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.9, ease: 'easeOut', delay: 0.1 }}
-        className="pointer-events-none absolute right-[-60px] bottom-6 md:right-[-80px] md:bottom-10"
-      >
-        <motion.div
-          animate={{ y: [0, 50, 0] }}
-          transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
-        >
-          <BrandOrnament className="text-brand" size={260} mirrored />
-        </motion.div>
-      </motion.div>
+          <motion.div
+            aria-hidden
+            initial={{ x: 120, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.9, ease: 'easeOut', delay: 0.1 }}
+            className="pointer-events-none absolute right-[-60px] bottom-6 md:right-[-80px] md:bottom-10"
+            style={{ willChange: 'transform', contain: 'paint' }}
+          >
+            <motion.div
+              animate={allowLoops ? { y: [0, 10, 0] } : { y: 0 }}
+              transition={allowLoops ? { duration: 6.5, repeat: Infinity, ease: 'easeInOut' } : { duration: 0 }}
+            >
+              <BrandOrnament className="text-brand" size={260} mirrored />
+            </motion.div>
+          </motion.div>
+        </>
+      )}
 
       <div className="mx-auto max-w-6xl px-6">
-        {/* Badge belt (Framer Motion marquee) */}
-        <motion.div
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: 'easeOut' }}
+        {/* Badge belt — CSS marquee (no Framer loop) */}
+        <div
+          ref={marqueeRef}
           className="relative mx-auto max-w-4xl overflow-hidden"
+          style={{ contain: 'layout paint' }}
         >
           <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-surface to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-surface to-transparent" />
 
-          <motion.div
-            aria-hidden
-            className="flex w-max"
-            animate={{ x: ['0%', '-50%'] }}
-            transition={{ ease: 'linear', duration: 30, repeat: Infinity }}
+          <div
+            className={`flex w-max ${(!prefersReduced && marqueeInView) ? 'marquee' : ''}`}
+            style={
+              (!prefersReduced && marqueeInView)
+                ? (isMobile ? { animationDuration: '36s' } : undefined)
+                : { transform: 'none' }
+            }
           >
-            <MarqueeRow>
-              {BADGES.map((label, i) => (
+            <MarqueeRow compact={isMobile}>
+              {(isMobile ? BADGES.slice(0, 10) : BADGES).map((label, i) => (
                 <Badge key={`${label}-${i}`} label={label} />
               ))}
             </MarqueeRow>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Headline */}
         <motion.h1
@@ -142,21 +164,45 @@ export default function HeroWaitlist() {
         </motion.div>
       </div>
 
-      {/* ambient brand glow (keep as-is) */}
+      {/* Ambient brand glow — drop heavy blur on mobile */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 [mask-image:radial-gradient(65%_55%_at_50%_0%,black,transparent)]"
       >
-        <div className="absolute inset-0 blur-3xl opacity-30" style={{ background: 'var(--brand-glow)' }} />
+        {!isMobile ? (
+          <div className="absolute inset-0 blur-xl opacity-30" style={{ background: 'var(--brand-glow)' }} />
+        ) : (
+          <div
+            className="absolute inset-0 opacity-25"
+            style={{
+              background: 'radial-gradient(60% 40% at 50% 0%, var(--brand-glow) 0%, transparent 70%)'
+            }}
+          />
+        )}
       </div>
     </section>
   );
 }
 
-/* -------- helpers (JS, no types) -------- */
+/* -------- helpers (JS) -------- */
 
-function BrandOrnament({ className = '', mirrored = false, size = 260 }) {
-  // We color via currentColor; mask uses your SVG
+function BrandOrnament({ className = '', mirrored = false, size = 260, useImageFallback = false }) {
+  // If you ever want to force <img> fallback on mobile, pass useImageFallback={true}
+  if (useImageFallback) {
+    return (
+      <img
+        aria-hidden
+        src="/assets/logo/ornament-prebaked.png"  /* export a pre-blurred/fill version */
+        alt=""
+        width={size}
+        height={size}
+        className={className}
+        style={{ opacity: 0.45, transform: mirrored ? 'scaleX(-1)' : undefined }}
+      />
+    );
+  }
+
+  // CSS mask version (kept off on mobile by the parent)
   return (
     <div
       aria-hidden
@@ -174,18 +220,20 @@ function BrandOrnament({ className = '', mirrored = false, size = 260 }) {
         WebkitMaskSize: 'contain',
         maskPosition: 'center',
         WebkitMaskPosition: 'center',
-        transform: mirrored ? 'scaleX(-1)' : undefined,
+        transform: mirrored ? 'scaleX(-1) translateZ(0)' : 'translateZ(0)',
         opacity: 0.45,
+        willChange: 'transform',
+        contain: 'paint'
       }}
     />
   );
 }
 
-function MarqueeRow({ children }) {
+function MarqueeRow({ children, compact = false }) {
   return (
-    <div className="flex items-center gap-2 pr-4">
+    <div className={`flex items-center ${compact ? 'gap-1.5 pr-2' : 'gap-2 pr-4'}`}>
       {children}
-      {children}
+      {children} {/* duplicate content to allow seamless -50% loop */}
     </div>
   );
 }

@@ -22,7 +22,7 @@ export default function TechStackGrid({
   };
 
   return (
-    <section className={`relative py-10 md:py-14 ${className} border border-amber-500`}>
+    <section className={`relative py-10 md:py-14 ${className}`}>
       <motion.ul
         variants={container}
         initial="hidden"
