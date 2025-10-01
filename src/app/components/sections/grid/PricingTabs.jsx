@@ -42,7 +42,6 @@ const PRICING_PLANS = [
   {
     id: "premium",
     title: "Premium",
-    badge: "Most Popular",
     popular: true,
     tagline: "Team-ready SaaS",
     price: {
@@ -53,7 +52,7 @@ const PRICING_PLANS = [
     },
     cta: { label: "Go Premium", href: "#checkout-premium" },
     features: [
-      "Everything in Starter + 2 Landing Page Templetes",
+      "Everything in Starter + 2 Landing Page Templates",
       "NextAuth / Clerk Authentication",
       "Role Based Access for Teams",
       "Six React Email templates",
@@ -271,17 +270,6 @@ export default function PricingTabs() {
           {plans.map((p, i) => (
             <PlanCard key={p.id} plan={p} index={i} />
           ))}
-        </div>
-
-        {/* Optional: horizontal snap (alt mobile view) */}
-        <div className="md:hidden mt-8 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex snap-x snap-mandatory gap-4">
-            {plans.map((p, i) => (
-              <div key={p.id} className="min-w-[85%] snap-center">
-                <PlanCard plan={p} index={i} />
-              </div>
-            ))}
-          </div>
         </div>
 
       </div>
