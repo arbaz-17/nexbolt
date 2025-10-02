@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { waitlistSchema } from '@/lib/validations/waitlistSchema';
+import api from '@/utils/axios';
 
 export default function WaitlistForm({ onSuccess }) {
   const [serverMsg, setServerMsg] = useState('');
@@ -23,39 +24,36 @@ export default function WaitlistForm({ onSuccess }) {
   });
 
   useEffect(() => {
-    setValue('startedAt', Date.now()); // reset start time on mount
+    setValue('startedAt', Date.now());
   }, [setValue]);
 
   const onSubmit = async (data) => {
     setServerMsg('');
     setSubmitting(true);
     try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
-
-      const payload = await res.json().catch(() => ({}));
-      if (res.status === 201 || payload?.ok) {
+      // api.post returns res.data directly due to interceptor
+      const payload = await api.post('/api/waitlist', data);
+      // Expecting: { ok: true, deduped?: boolean }
+      if (payload?.ok) {
         reset({ email: '', website: '', startedAt: Date.now() });
-        setServerMsg("You’re in! 🎉 We’ll send early access and founder updates soon.");
+        setServerMsg(
+          payload?.deduped
+            ? 'Looks like you’re already on the list, thank you!'
+            : 'You’re in! 🎉 We’ll send early access and founder updates soon.'
+        );
         onSuccess?.();
         setTimeout(() => successRef.current?.focus(), 0);
         return;
       }
-
-      if (payload?.code === 'DUPLICATE') {
-        setServerMsg('Looks like you’re already on the list, thank you!');
-      } else if (payload?.code === 'RATE_LIMITED') {
-        setServerMsg('Easy there—too many attempts from your network. Please try again in a bit.');
-      } else if (payload?.message) {
-        setServerMsg(payload.message);
-      } else {
-        setServerMsg('Something went wrong, please try again.');
-      }
-    } catch {
       setServerMsg('Something went wrong, please try again.');
+    } catch (err) {
+      if (err.code === 'DUPLICATE') {
+        setServerMsg('Looks like you’re already on the list, thank you!');
+      } else if (err.code === 'RATE_LIMITED' || err.status === 429) {
+        setServerMsg('Easy there—too many attempts from your network. Please try again in a bit.');
+      } else {
+        setServerMsg(err.message || 'Something went wrong, please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
