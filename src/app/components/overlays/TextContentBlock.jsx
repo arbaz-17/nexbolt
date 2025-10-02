@@ -39,7 +39,7 @@ export default function TextContentBlock({
       <div className={`mx-auto ${maxWidth} px-6 flex flex-col gap-4 ${alignClasses}`}>
         <motion.h2
           id="content-block-title"
-          className="font-heading text-3xl md:text-4xl font-semibold tracking-tight"
+          className="font-heading text-3xl md:text-4xl font-bold tracking-tight"
           variants={child}
         >
           {title}
