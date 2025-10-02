@@ -35,14 +35,58 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
   const safe = Array.isArray(features) ? features.filter(Boolean) : [];
   const ActiveIcon = safe[active]?.icon || Boxes;
 
+  const reduce = useReducedMotion();
+
+  // --- Motion variants (fade-up + stagger) ---
+  const sectionVar = {
+    hidden: { opacity: 0, y: 18 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+  };
+
+  const gridVar = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: 0.04, delayChildren: 0.06 },
+    },
+  };
+
+  const gridItemVar = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  };
+
+  const panelVar = {
+    hidden: { opacity: 0, y: 16 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1], staggerChildren: 0.06 },
+    },
+  };
+
+  const childVar = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+  };
+
   return (
-    <section
+    <motion.section
       id="features"
-      className={`w-full py-10 md:py-12 lg:py-16 border  ${className || ""}`}
+      className={`w-full py-10 md:py-12 lg:py-16 ${className || ""}`}
+      initial={reduce ? false : "hidden"}
+      whileInView={reduce ? undefined : "show"}
+      viewport={{ once: true, amount: 0.3 }}
+      variants={sectionVar}
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Icon tabs (icon-only, no bg) */}
-        <div className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-11 gap-2.5 sm:gap-3">
+        <motion.div
+          className="grid grid-cols-5 sm:grid-cols-8 lg:grid-cols-11 gap-2.5 sm:gap-3"
+          initial={reduce ? false : "hidden"}
+          whileInView={reduce ? undefined : "show"}
+          viewport={{ once: true, amount: 0.3 }}
+          variants={gridVar}
+        >
           {safe.map((f, i) => {
             const Icon = f.icon || Boxes;
             const selected = i === active;
@@ -61,6 +105,7 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
                     : "border-border hover:border-brand/40 hover:shadow-sm",
                 ].join(" ")}
                 title={f.title}
+                variants={gridItemVar}
               >
                 <Icon
                   className={[
@@ -73,7 +118,7 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
               </motion.button>
             );
           })}
-        </div>
+        </motion.div>
 
         {/* Active detail panel */}
         <div className="mt-6 sm:mt-8">
@@ -88,17 +133,23 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
               <Card className="border border-border bg-card/80 backdrop-blur-sm shadow-sm">
                 <CardContent className="p-5 sm:p-6 md:p-8">
                   {/* Two-column detail: text left, image right (stacks on small) */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
+                  <motion.div
+                    className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start"
+                    initial={reduce ? false : "hidden"}
+                    whileInView={reduce ? undefined : "show"}
+                    viewport={{ once: true, amount: 0.35 }}
+                    variants={panelVar}
+                  >
                     {/* Left: title + bullets */}
-                    <div className="md:col-span-7">
-                      <div className="flex items-center gap-3">
+                    <motion.div className="md:col-span-7" variants={childVar}>
+                      <motion.div className="flex items-center gap-3" variants={childVar}>
                         <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-brand">
                           <ActiveIcon className="h-5 w-5" />
                         </span>
                         <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                           {safe[active]?.title}
                         </h3>
-                      </div>
+                      </motion.div>
 
                       {(() => {
                         const pts = Array.isArray(safe[active]?.points)
@@ -113,38 +164,48 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
                           <div className="mt-3 sm:mt-4">
                             {/* Regular bullets (all except the last) */}
                             {normalPoints.length > 0 && (
-                              <ul className="space-y-2.5 sm:space-y-3 list-disc pl-5 sm:pl-6">
+                              <motion.ul
+                                className="space-y-2.5 sm:space-y-3 list-disc pl-5 sm:pl-6"
+                                variants={panelVar}
+                              >
                                 {normalPoints.map((p, i) => (
-                                  <li
+                                  <motion.li
                                     key={i}
                                     className="leading-relaxed text-muted-foreground"
+                                    variants={childVar}
                                   >
                                     {p}
-                                  </li>
+                                  </motion.li>
                                 ))}
-                              </ul>
+                              </motion.ul>
                             )}
 
                             {/* Last point as a non-bulleted badge */}
                             {lastPoint && (
-                              <div className={normalPoints.length ? "mt-4" : ""}>
+                              <motion.div
+                                className={normalPoints.length ? "mt-4" : ""}
+                                variants={childVar}
+                              >
                                 <HoursSavedBadge>{lastPoint}</HoursSavedBadge>
-                              </div>
+                              </motion.div>
                             )}
                           </div>
                         );
                       })()}
-                    </div>
+                    </motion.div>
 
                     {/* Right: image (stacks below on small screens) */}
-                    <div className="md:col-span-5">
+                    <motion.div className="md:col-span-5" variants={childVar}>
                       {safe[active]?.imageSrc ? (
-                        <div className="overflow-hidden rounded-xl border border-border bg-white">
+                        <motion.div
+                          className="overflow-hidden rounded-xl border border-border bg-white"
+                          variants={childVar}
+                        >
                           <div
                             className="relative w-full"
                             style={{ paddingTop: "56.25%" }}
                           >
-                            <RotatingImage>
+                            <FloatingImage amplitude={14} duration={10}>
                               <Image
                                 src={safe[active]?.imageSrc}
                                 alt={
@@ -157,44 +218,51 @@ export function FeaturesSection({ features = FEATURES, className = "" }) {
                                 className="object-contain"
                                 priority={active < 2}
                               />
-                            </RotatingImage>
+                            </FloatingImage>
                           </div>
-                        </div>
+                        </motion.div>
                       ) : (
-                        <div className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+                        <motion.div
+                          className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground"
+                          variants={childVar}
+                        >
                           Preview coming soon
-                        </div>
+                        </motion.div>
                       )}
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 </CardContent>
               </Card>
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
-function RotatingImage({ children }) {
-  const prefersReducedMotion = useReducedMotion();
+function FloatingImage({ children, amplitude = 12, duration = 8 }) {
+  const reduce = useReducedMotion();
 
   return (
     <motion.div
       className="absolute inset-0"
-      // Rotate only if user doesn't prefer reduced motion
-      animate={prefersReducedMotion ? { rotate: 0 } : { rotate: 360 }}
+      animate={
+        reduce
+          ? { y: 0 }
+          : { y: [0, -amplitude, 0, amplitude, 0] } // up → center → down → center (loop)
+      }
       transition={{
-        repeat: Infinity,
-        duration: 30, // slower = calmer; try 20–40
-        ease: "linear",
+        duration, // total loop duration (seconds)
+        repeat: Infinity, // loop forever
+        ease: "easeInOut", // smooth in/out
       }}
     >
       {children}
     </motion.div>
   );
 }
+
 
 
 /* ---------- Data (icons included) ---------- */
@@ -211,7 +279,7 @@ export const FEATURES = [
       "All in One Package.",
       "24+ hours saved",
     ],
-    imageSrc: "/assets/features/core.svg",
+    imageSrc: "/assets/features/core.png",
   },
   {
     title: "Authentication",
@@ -224,7 +292,7 @@ export const FEATURES = [
       "User management for invites, role changes, and deactivation.",
       "12+ hours saved",
     ],
-    imageSrc: "/assets/features/auth.svg",
+    imageSrc: "/assets/features/auth.png",
   },
   {
     title: "Multi-Tenancy",
@@ -237,7 +305,7 @@ export const FEATURES = [
       "Local seeds for multiple tenants and isolation tests.",
       "10+ hours saved",
     ],
-    imageSrc: "/assets/features/mt.svg",
+    imageSrc: "/assets/features/mt.png",
   },
   {
     title: "Billing & Payments",
@@ -250,7 +318,7 @@ export const FEATURES = [
       "Test keys and seed scripts for local end-to-end payment simulations.",
       "8+ hours saved",
     ],
-    imageSrc: "/assets/features/payment.svg",
+    imageSrc: "/assets/features/payment.png",
   },
   {
     title: "Config-Driven Modules",
@@ -263,7 +331,7 @@ export const FEATURES = [
       "Add modules in minutes with consistent behavior across the app.",
       "10+ hours saved",
     ],
-    imageSrc: "/assets/features/config.svg",
+    imageSrc: "/assets/features/config.png",
   },
   {
     title: "Analytics Dashboard",
@@ -276,7 +344,7 @@ export const FEATURES = [
       "Seeded demo data to preview real charts locally and verify performance.",
       "12+ hours saved",
     ],
-    imageSrc: "/assets/features/analytics.svg",
+    imageSrc: "/assets/features/analytics.png",
   },
   {
     title: "AI Integration",
@@ -289,7 +357,7 @@ export const FEATURES = [
       "Built-in workflows for AI dev tools to speed scaffolding & refactors",
       "6+ hours saved",
     ],
-    imageSrc: "/assets/features/ai.svg",
+    imageSrc: "/assets/features/ai.png",
   },
   {
     title: "Database",
@@ -302,7 +370,7 @@ export const FEATURES = [
       "Pooling, transactions, and helpers for pagination, filtering, soft deletes.",
       "10+ hours saved",
     ],
-    imageSrc: "/assets/features/db.svg",
+    imageSrc: "/assets/features/db.png",
   },
   {
     title: "Email",
@@ -313,7 +381,7 @@ export const FEATURES = [
       "React email templates with variants & custom theming.",
       "4+ hours saved",
     ],
-    imageSrc: "/assets/features/email.svg",
+    imageSrc: "/assets/features/email.png",
   },
   {
     title: "UI Kit",
@@ -326,7 +394,7 @@ export const FEATURES = [
       "Theme-aware chart components wired to analytics helpers.",
       "12+ hours saved",
     ],
-    imageSrc: "/assets/features/ui.svg",
+    imageSrc: "/assets/features/ui.png",
   },
   {
     title: "SEO",
@@ -339,7 +407,7 @@ export const FEATURES = [
       "Perf-friendly defaults: semantic HTML, a11y headings, alts, preload hints.",
       "8+ hours saved",
     ],
-    imageSrc: "/assets/features/seo.svg",
+    imageSrc: "/assets/features/seo.png",
   },
 ];
 

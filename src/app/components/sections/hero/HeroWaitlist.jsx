@@ -10,10 +10,10 @@ const BADGES = [
   'Tailwind CSS','shadcn/ui','Framer Motion',
   'PostgreSQL','Supabase','MongoDB','MySQL','Prisma',
   'NextAuth','Clerk',
-  'Stripe','Paddle','LemonSqueezy',
+  'Stripe','LemonSqueezy',
   'Resend','Mailchimp',
   'Zod','ESLint','Prettier',
-  'OpenAI',
+  'OpenAI','DeepSeek','Gemini'
 ];
 
 export default function HeroWaitlist() {
@@ -138,7 +138,7 @@ export default function HeroWaitlist() {
           className="mt-3 flex justify-center"
         >
           <span className="inline-flex items-center rounded-full border border-border bg-surface px-3 py-1 text-center text-sm md:text-sm font-medium text-brand">
-            Opinionated where it matters, <span className="ml-1">swappable where it should be.</span>
+            Stop Planning. Start Profiting. Ship Your SaaS in Days.
           </span>
         </motion.div>
 

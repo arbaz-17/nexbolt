@@ -2,9 +2,12 @@ import HeroWaitlist from "./components/sections/hero/HeroWaitlist"
 import TextContentBlock from "./components/overlays/TextContentBlock"
 import TechStackGrid from "./components/sections/grid/TechStackGrid"
 import { FeaturesSection } from "./components/sections/grid/FeaturesSection"
-import { RoadmapSection } from "./components/sections/grid/RoadmapSection"
+import { FeatureProgressSection } from "./components/sections/grid/RoadmapSection"
 import PricingTabs from "./components/sections/grid/PricingTabs"
-
+import AboutMe from "./components/sections/grid/AboutMe"
+import HeadlineBlock from "./components/overlays/HeadlineBlock"
+import FAQSection from "./components/sections/grid/FAQSection"
+import HireMeSection from "./components/sections/grid/HireMe"
 
 export default function Home() {
   return (
@@ -22,18 +25,36 @@ export default function Home() {
         align="center"
       />
       <FeaturesSection />
-            <TextContentBlock
-        title="NEXTBOLT WORK PROGRESS"
-        description="From ✅ shipped to ⏳ in progress, see what’s usable now and what’s around the corner as we march toward a stable, scalable v1."
-        align="center"
-      />
-      <RoadmapSection />
       <TextContentBlock
         title="PICK YOUR KIT, BUILD YOUR SAAS"
         description="Save weeks of work. Pay once. Ship unlimited projects at bolt speed."
         align="center"
       />
       <PricingTabs />
+                  <TextContentBlock
+        title="WORK PROGRESS"
+        description="The fnish line is in sight. Track every feature progressing to launch."
+        align="center"
+      />
+      <FeatureProgressSection />
+      <HeadlineBlock
+        title="MEET THE BUILDER"
+        align="center"
+      />
+      <AboutMe />
+            <TextContentBlock
+        title="FREQUENTLY ASKED QUESTIONS"
+        description="Everything you need to know about Nextbolt and how it can help you ship your SaaS faster."
+        align="center"
+      />
+      <FAQSection />
+                  <TextContentBlock
+        title="HIRE ME"
+        description="If you’d rather skip the boilerplate and have me build your SaaS or app end-to-end. I’ll architect, ship, and launch it with the same patterns behind Nexbolt."
+        align="center"
+      />
+      <HireMeSection />
+
     </>
   )
 }

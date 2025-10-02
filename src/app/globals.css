@@ -6,7 +6,7 @@
 
 /* 2) Voltage Black tokens as CSS variables (light & dark) */
 :root {
-  --bg: #F7F8FA;
+  --bg: rgb(255, 255, 255);
   --surface: #FFFFFF;
   --muted: oklch(0.97 0 0);
   --border: oklch(0.922 0 0);

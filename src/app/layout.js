@@ -29,28 +29,28 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      style={{ colorScheme: 'light' }}
+      // remove the forced light colorscheme and avoid hydration warnings
+      suppressHydrationWarning
       className={`${spaceGrotesk.variable} ${inter.variable} antialiased`}
     >
       <head>
-        {/* Runs before hydration to prevent light/dark flash & hydration mismatch */}
+        {/* Run BEFORE hydration to set .dark and color-scheme with no flash */}
         <Script id="nexbolt-theme" strategy="beforeInteractive">
-          {`
-            (function () {
-              try {
-                var stored = localStorage.getItem('theme'); // 'light'|'dark'|null
-                var systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                var theme = stored || (systemDark ? 'dark' : 'light');
-                var root = document.documentElement;
-                if (theme === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
-                root.style.colorScheme = theme;
-                window.__nexboltTheme = theme;
-              } catch (e) {}
-            })();
-          `}
+          {`(function () {
+            try {
+              var stored = localStorage.getItem('theme'); // 'light'|'dark'|null
+              // *** Default to DARK when no stored preference ***
+              var theme = stored || 'dark';
+              var root = document.documentElement;
+              if (theme === 'dark') root.classList.add('dark'); else root.classList.remove('dark');
+              root.style.colorScheme = theme; // fixes native controls
+              window.__nexboltTheme = theme;  // expose for client reads
+            } catch (e) {}
+          })();`}
         </Script>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
+
       <body>
         <ThemeProvider>
           <Navbar />

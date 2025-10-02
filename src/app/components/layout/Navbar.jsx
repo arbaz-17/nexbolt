@@ -11,15 +11,13 @@ import { useTheme } from '../theme/ThemeProvider'
 const NAV_LINKS = [
   { label: 'Waitlist', href: '#waitlist' },
   { label: 'Features', href: '#features' },
-  { label: 'Roadmap',  href: '#roadmap' },
+  { label: 'Roadmap', href: '#roadmap' }
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
-  const { theme } = useTheme()
-
   // Close on hash change
-  useEffect(() => {
+useEffect(() => {
     const onHash = () => setOpen(false)
     window.addEventListener('hashchange', onHash)
     return () => window.removeEventListener('hashchange', onHash)
@@ -31,16 +29,11 @@ export default function Navbar() {
     root.style.overflow = open ? 'hidden' : ''
   }, [open])
 
-  // Choose logo src by theme (falls back to light)
-  const logoSrc = useMemo(
-    () => (theme === 'dark' ? '/assets/logo/logo-dark-3.svg' : '/assets/logo/logo-light-2.svg'),
-    [theme]
-  )
 
   return (
     <header className="fixed left-0 top-2 z-50 w-full px-4">
       <div
-          className="
+        className="
     relative mx-auto flex max-w-6xl items-center justify-between
     rounded-full border border-border bg-surface/90 px-6 py-0  /* was py-3 → set to py-0 */
     shadow-md backdrop-blur
@@ -49,20 +42,30 @@ export default function Navbar() {
       >
         {/* Logo / Brand */}
         <div className="z-20 flex items-center">
-<Link
-  href="/"
-  className="rounded-md px-1 py-0 leading-none focus:outline-none focus:ring-2 focus:ring-ring"
-  aria-label="NexBolt Home"
->
-  <Image
-    src={logoSrc}
-    alt="NexBolt"
-    width={160}
-    height={40}
-    className="block h-10 w-auto align-middle"  /* block removes baseline gap */
-    priority
-  />
-</Link>
+          <Link
+            href="/"
+            className="rounded-md px-1 py-0 leading-none focus:outline-none focus:ring-2 focus:ring-ring"
+            aria-label="NexBolt Home"
+          >
+            {/* Light logo */}
+            <Image
+              src="/assets/logo/logo-light-2.svg"
+              alt="NexBolt"
+              width={160}
+              height={40}
+              className="block h-10 w-auto align-middle dark:hidden"
+              priority
+            />
+            {/* Dark logo */}
+            <Image
+              src="/assets/logo/logo-dark-3.svg"
+              alt="NexBolt"
+              width={160}
+              height={40}
+              className="hidden h-10 w-auto align-middle dark:block"
+              priority
+            />
+          </Link>
         </div>
 
         {/* Desktop nav — centered */}
@@ -142,21 +145,29 @@ export default function Navbar() {
               "
             >
               <div className="mb-4 flex items-center justify-between">
-<Link
-  href="/"
-  onClick={() => setOpen(false)}
-  aria-label="NexBolt Home"
-  className="flex items-center leading-none"
->
-  <Image
-    src={logoSrc}
-    alt="NexBolt"
-    width={148}
-    height={36}
-    className="block h-9 w-auto align-middle"
-    priority
-  />
-</Link>
+                <Link
+                  href="/"
+                  onClick={() => setOpen(false)}
+                  aria-label="NexBolt Home"
+                  className="flex items-center leading-none"
+                >
+<Image
+  src="/assets/logo/logo-light-2.svg"
+  alt="NexBolt"
+  width={148}
+  height={36}
+  className="block h-9 w-auto align-middle dark:hidden"
+  priority
+/>
+<Image
+  src="/assets/logo/logo-dark-3.svg"
+  alt="NexBolt"
+  width={148}
+  height={36}
+  className="hidden h-9 w-auto align-middle dark:block"
+  priority
+/>
+                </Link>
 
                 <button
                   onClick={() => setOpen(false)}
