@@ -11,7 +11,8 @@ import { useTheme } from '../theme/ThemeProvider'
 const NAV_LINKS = [
   { label: 'Waitlist', href: '#waitlist' },
   { label: 'Features', href: '#features' },
-  { label: 'Roadmap', href: '#roadmap' }
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'Progress', href: '#roadmap' },
 ]
 
 export default function Navbar() {
